@@ -1,7 +1,12 @@
-VENV := reachy_mini_env
-PYTHON := $(VENV)/bin/python
+-include .env
+export
+
+VENV     := reachy_mini_env
+PYTHON   := $(VENV)/bin/python
 MJPYTHON := $(VENV)/bin/mjpython
 DYLD_FIX := DYLD_LIBRARY_PATH="$(HOME)/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/lib:$$DYLD_LIBRARY_PATH"
+
+# ── Local robot ────────────────────────────────────────────────────────────────
 
 reachy-sim:
 	@echo "Launching the Reachy simulator..."
@@ -23,15 +28,28 @@ smoke-test:
 	@echo "Running smoke test (daemon must be running)..."
 	$(PYTHON) scripts/smoke_test.py
 
+# ── Brev A100 ──────────────────────────────────────────────────────────────────
+
 brev:
 	@echo "Connecting to reachy-workshop (A100) on Brev..."
 	brev shell reachy-workshop
 
-# NOTE: LLM forwards to :8010 (not :8000) — the Reachy daemon owns :8000 locally.
+# NOTE: NIMs forward to :8010/:8002 — Reachy daemon owns :8000 locally.
 brev-ports:
-	@echo "Forwarding Brev ports (LLM→8010, TTS→8002)..."
+	@echo "Forwarding NIM ports (LLM/STT/Vision→8010, TTS→8002)..."
 	brev port-forward reachy-workshop --port 8010:8000 &
 	brev port-forward reachy-workshop --port 8002:8002 &
-	@echo "Port forwards running in background. Kill with: kill %1 %2"
 
-.PHONY: reachy-sim hello say-hello workout-buddy smoke-test brev brev-ports
+brev-stop-ports:
+	pkill -f "brev port-forward" || true
+
+brev-check:
+	@echo "Checking NVIDIA GPU on Brev instance..."
+	ssh reachy-workshop "docker run --gpus all --rm nvidia/cuda:12.0-base nvidia-smi"
+
+nim:
+	@[ "$(NGC_API_KEY)" ] || { echo "ERROR: set NGC_API_KEY in .env"; exit 1; }
+	ssh reachy-workshop "NGC_API_KEY=$(NGC_API_KEY) bash -s" < scripts/start_nim.sh
+
+.PHONY: reachy-sim hello say-hello workout-buddy smoke-test \
+        brev brev-ports brev-stop-ports brev-check nim
