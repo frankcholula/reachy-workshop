@@ -19,4 +19,12 @@ workout-buddy:
 	@echo "Running workout buddy..."
 	$(PYTHON) workout_buddy/main.py
 
-.PHONY: reachy-sim hello say-hello workout-buddy
+smoke-test:
+	@echo "Running smoke test (daemon must be running)..."
+	$(PYTHON) scripts/smoke_test.py
+
+brev:
+	@echo "Connecting to reachy-workshop (A100) on Brev..."
+	brev shell reachy-workshop
+
+.PHONY: reachy-sim hello say-hello workout-buddy smoke-test brev
