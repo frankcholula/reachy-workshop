@@ -47,9 +47,5 @@ brev-check:
 	@echo "Checking NVIDIA GPU on Brev instance..."
 	ssh reachy-workshop "docker run --gpus all --rm nvidia/cuda:12.0-base nvidia-smi"
 
-nim:
-	@[ "$(NGC_API_KEY)" ] || { echo "ERROR: set NGC_API_KEY in .env"; exit 1; }
-	ssh reachy-workshop "NGC_API_KEY=$(NGC_API_KEY) bash -s" < scripts/start_nim.sh
-
 .PHONY: reachy-sim hello say-hello workout-buddy smoke-test \
         brev brev-ports brev-stop-ports brev-check nim
