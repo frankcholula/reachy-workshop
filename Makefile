@@ -27,4 +27,11 @@ brev:
 	@echo "Connecting to reachy-workshop (A100) on Brev..."
 	brev shell reachy-workshop
 
-.PHONY: reachy-sim hello say-hello workout-buddy smoke-test brev
+# NOTE: LLM forwards to :8010 (not :8000) — the Reachy daemon owns :8000 locally.
+brev-ports:
+	@echo "Forwarding Brev ports (LLM→8010, TTS→8002)..."
+	brev port-forward reachy-workshop --port 8010:8000 &
+	brev port-forward reachy-workshop --port 8002:8002 &
+	@echo "Port forwards running in background. Kill with: kill %1 %2"
+
+.PHONY: reachy-sim hello say-hello workout-buddy smoke-test brev brev-ports
