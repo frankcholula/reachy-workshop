@@ -39,7 +39,7 @@ DANCE_NAMES = [
 ]
 
 
-class WorkoutBuddyApp(ReachyMiniApp):
+class MealtimeCompanionApp(ReachyMiniApp):
     custom_app_url = "http://0.0.0.0:8042"
 
     def __init__(self):
@@ -129,7 +129,7 @@ class WorkoutBuddyApp(ReachyMiniApp):
 
 
 if __name__ == "__main__":
-    app = WorkoutBuddyApp()
+    app = MealtimeCompanionApp()
     try:
         app.wrapped_run()
     except KeyboardInterrupt:

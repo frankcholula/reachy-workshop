@@ -20,9 +20,9 @@ say-hello:
 	@echo "Running say hello script..."
 	$(PYTHON) scripts/say_hello.py
 
-workout-buddy:
-	@echo "Running workout buddy..."
-	$(PYTHON) workout_buddy/main.py
+mealtime-companion:
+	@echo "Running mealtime companion..."
+	$(PYTHON) mealtime_companion/main.py
 
 smoke-test:
 	@echo "Running smoke test (daemon must be running)..."
@@ -47,5 +47,5 @@ brev-check:
 	@echo "Checking NVIDIA GPU on Brev instance..."
 	ssh reachy-workshop "docker run --gpus all --rm nvidia/cuda:12.0-base nvidia-smi"
 
-.PHONY: reachy-sim hello say-hello workout-buddy smoke-test \
+.PHONY: reachy-sim hello say-hello mealtime-companion smoke-test \
         brev brev-ports brev-stop-ports brev-check nim
